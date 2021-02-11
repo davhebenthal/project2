@@ -11,6 +11,7 @@
 #define Ref_H
 #include <string> 
 #include <stdlib.h>
+#define DELIM  ".,;:'\" ?"  // characters that separate tokens
 using namespace std;
 
 // GetNextToken returns a token from str, which contains all characters
@@ -20,7 +21,7 @@ string GetNextToken(string& str, const string& delimiters);
 class Ref {
 private:
    short book, chap, verse;	// Reference information
-   string[67] bookNames;
+   string bookNames[67];
 public:
    Ref();  	// Default constructor
    Ref(string s); 	// Parse constructor - example parameter "43:3:16"

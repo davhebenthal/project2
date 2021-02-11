@@ -3,6 +3,7 @@
 
 #include "Verse.h"
 #include <iostream>
+#define DELIM  ".,;:'\" ?"  // characters that separate tokens
 using namespace std;
 
 Verse::Verse() {  	// Default constructor
@@ -14,29 +15,42 @@ Verse::Verse() {  	// Default constructor
 Verse::Verse(const string s) {
 	// use Ref constructor to create verseRef
 	// store the remainder of the string in verseText
-	Ref thisVerseRef;
 	
-	thisVerseRef.book = atoi(Ref::getNextToken(s).c_str());
-	thisVerseRef.chap = atoi(Ref::getNextToken(s).s_str());
-	thisVerseRef.verse = atoi(Ref::getNextToken(s).s_str());
+	string input = s;
 	
-	verseRef = thisVerseRef;
-	verseText = s;
+	int bookNum = atoi(GetNextToken(input, DELIM).c_str());
+	int chapNum = atoi(GetNextToken(input, DELIM).c_str());
+	int verseNum = atoi(GetNextToken(input, DELIM).c_str());
+	
+	
+	//int bookNum = atoi(GetNextToken(s));
+	//int chapNum = atoi(GetNextToken(s));
+	//int verseNum = atoi(GetNextToken(s));
+	
+	Ref thisVerseRef (bookNum, chapNum, verseNum);
+	
+	this->verseRef = thisVerseRef;
+	this->verseText = input;
 }
 
 
 
 // REQUIRED: Accessors
 string Verse::getVerse() {
-	   return this;
+	return this->verseText;
 }
 
 Ref Verse::getRef() {
-	return this.verseRef;
+	return this->verseRef;
 }
 
 // display reference and verse
 void Verse::display() {
     verseRef.display();
-    cout << " " << verseText;
+    cout << " " << verseText << endl;
+ }
+ 
+ void Verse::displayText()
+ {
+	 cout << verseText << endl;
  }

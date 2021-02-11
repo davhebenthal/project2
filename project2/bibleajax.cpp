@@ -54,10 +54,15 @@ int main() {
   form_iterator verse = cgi.getElement("verse");
   form_iterator nv = cgi.getElement("num_verse");
 
+  int bookNum;
+  int chapterNum;
+  int verseNum;
+  int numOfVerses;
+
   // Convert and check input data
   bool validInput = false;
   if (chapter != cgi.getElements().end()) {
-	 int chapterNum = chapter->getIntegerValue();
+	 chapterNum = chapter->getIntegerValue();
 	 if (chapterNum > 150) {
 		 cout << "<p>The chapter number (" << chapterNum << ") is too high.</p>" << endl;
 	 }
@@ -70,40 +75,39 @@ int main() {
   
   /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
 	
-  validInput = false;
-	
-  if (book != cgi.getElements().end()) {
-	 int bookNum = book->getIntegerValue();
+  if (book != cgi.getElements().end() && validInput == true) {
+	 bookNum = book->getIntegerValue();
 	 if (bookNum > 66) {
 		 cout << "<p>The book number (" << bookNum << ") is too high.</p>" << endl;
+		 validInput = false;
 	 }
 	 else if (bookNum <= 0) {
 		 cout << "<p>The book must be a positive number.</p>" << endl;
+		 validInput = false;
 	 }
 	 else
 		 validInput = true;
   }
   
-  validInput = false;
-  
-  if (verse != cgi.getElements().end()) {
-	 int verseNum = verse->getIntegerValue();
+  if (verse != cgi.getElements().end() && validInput == true) {
+	 verseNum = verse->getIntegerValue();
 	 if (verseNum > 176) {
 		 cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
+		 validInput = false;
 	 }
 	 else if (verseNum <= 0) {
 		 cout << "<p>The verse must be a positive number.</p>" << endl;
+		 validInput = false;
 	 }
 	 else
 		 validInput = true;
   }
-  
-  validInput = false;
 	
-  if (verse != cgi.getElements().end()) {
-	 int numOfVerses = nv->getIntegerValue();
+  if (verse != cgi.getElements().end() && validInput == true) {
+	 numOfVerses = nv->getIntegerValue();
      if (numOfVerses <= 0) {
 		 cout << "<p>The number of verses must be a positive number.</p>" << endl;
+		 validInput = false;
 	 }
 	 else
 		 validInput = true;
@@ -117,9 +121,15 @@ int main() {
    LookupResult result;
    Bible webBible("/home/class/csc3004/Bibles/web-complete");
    Verse lookupVerse;
+   //cout << "Looking up ref for: " << bookNum << " " << chapterNum << " " << verseNum << endl;
    Ref ref(bookNum, chapterNum, verseNum);
+   bool firstVerse = true;
    
-   lookupVerse = webBible.lookup(ref, result, true);
+
+   
+   lookupVerse = webBible.lookup(ref, result, firstVerse);
+   
+   
 
   /* SEND BACK THE RESULTS
    * Finally we send the result back to the client on the standard output stream
@@ -127,15 +137,24 @@ int main() {
    * This string will be inserted as is inside a container on the web page, 
    * so we must include HTML formatting commands to make things look presentable!
    */
-  if (validInput) {
+  if (validInput && result == SUCCESS) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
 	cout << "<p>Your result: "
-		 << **book << " " << **chapter << ":" << **verse 
-		 << "<em> The " << **nv
-		 << " actual verse(s) retreived from the server should go here!</em></p>" << endl;
+		 << **book << " " << **chapter << ":" << **verse << " ";
+		 //<< "<em> The " << **nv
+		 //<< " actual verse(s) retreived from the server should go here!</em></p>" << endl;
+		 lookupVerse.displayText();
+		 numOfVerses--;
+		 while (numOfVerses > 0)
+		 {
+			 lookupVerse = webBible.lookup(ref, result, false);
+			 lookupVerse.displayText();
+			 numOfVerses--;
+		 }
   }
   else {
-	  cout << "<p>Invalid Input: <em>report the more specific problem.</em></p>" << endl;
+	  //cout << "<p>Invalid Input: <em>report the more specific problem.</em></p>" << endl;
+	  //cout << webBible.error(result);
   }
   return 0;
 }

@@ -84,12 +84,26 @@ const Verse Bible::lookup(Ref ref, LookupResult& status, bool firstVerse) {
 				status = NO_VERSE;
 				cout << this->error(status);
 			}
+			else if (instream.eof() == true)
+			{
+				status = NO_VERSE;
+				cout << this->error(status);
+			}
 		}
 	}
 	else																//if the first verse has been successfully found, then simply display the next one
 	{
 		getline(instream, verseText);
-		currentVerse = Verse(verseText);
+		
+		if( instream.eof() == false)
+		{
+			currentVerse = Verse(verseText);
+		}
+		else
+		{
+			status = NO_VERSE;
+			cout << this->error(status);
+		}
 	}
 
 	return(currentVerse);

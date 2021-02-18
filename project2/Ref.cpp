@@ -237,5 +237,5 @@ bookNames[63] = "2 John";
 bookNames[64] = "3 John";
 bookNames[65] = "Jude";
 bookNames[66] = "Revelations";
-     cout << bookNames[book] << ":" << chap << ":" << verse;
+     cout << "<b>" << bookNames[book] << ":" << chap << ":" << verse << "</b>";
 }

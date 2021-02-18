@@ -123,11 +123,12 @@ int main() {
    Verse lookupVerse;
    //cout << "Looking up ref for: " << bookNum << " " << chapterNum << " " << verseNum << endl;
    Ref ref(bookNum, chapterNum, verseNum);
+   Ref outputRef(1,1,1);
    bool firstVerse = true;
    
 
    
-   lookupVerse = webBible.lookup(ref, result, firstVerse);
+   lookupVerse = webBible.lookup(ref, outputRef, result, firstVerse);
    
    
 
@@ -138,18 +139,28 @@ int main() {
    * so we must include HTML formatting commands to make things look presentable!
    */
   if (validInput && result == SUCCESS) {
-	cout << "Search Type: <b>" << **st << "</b>" << endl;
-	cout << "<p>Your result: "
-		 << **book << " " << **chapter << ":" << **verse << " ";
+	cout << "Search Type: <b>" << **st << "</b>" << "</br>";
+		 //cout << "Your result: ";
+		 //<< **book << " " << **chapter << ":" << **verse << " ";
 		 //<< "<em> The " << **nv
 		 //<< " actual verse(s) retreived from the server should go here!</em></p>" << endl;
-		 lookupVerse.displayText();
+		 ref.display();																			//display the reference for the first verse
+		 cout << " " << endl;
+		 lookupVerse.displayText();																//display the text for the first verse
 		 numOfVerses--;
-		 while (numOfVerses > 0)
+		 firstVerse = false;
+		 while (numOfVerses > 0 && result == SUCCESS)											//if there are still more verses to display, then move to the next verse unless the end of the Bible is reached
 		 {
-			 lookupVerse = webBible.lookup(ref, result, false);
-			 lookupVerse.displayText();
-			 numOfVerses--;
+			 cout << "</br>"; 
+			 cout << " ";
+			 lookupVerse = webBible.lookup(ref, outputRef, result, firstVerse);
+			 if (result == SUCCESS)																//result for all verses after the first will only ever != SUCCESS if the end of the Bible has been reached
+			 {
+				outputRef.display();
+				cout << " " << endl;
+				lookupVerse.displayText();
+				numOfVerses--;
+			 }
 		 }
   }
   else {

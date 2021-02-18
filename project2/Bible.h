@@ -33,7 +33,7 @@ class Bible {	// A class to represent a version of the bible
    Bible(const string s); // Constructor – pass name of bible file
    
    // REQUIRED: Find and return a verse in this Bible, given a reference
-   const Verse lookup(Ref ref, LookupResult& status, bool firstVerse); 
+   const Verse lookup(Ref ref, Ref &outputRef, LookupResult& status, bool firstVerse); 
    // REQUIRED: Return the reference after the given ref
    Ref next(Ref ref, LookupResult& status);
    // OPTIONAL: Return the reference before the given ref

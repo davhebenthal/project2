@@ -19,7 +19,7 @@ Bible::Bible() { // Default constructor
 Bible::Bible(const string s) { infile = s; }
 
 // REQUIRED: lookup finds a given verse in this Bible
-const Verse Bible::lookup(Ref ref, LookupResult& status, bool firstVerse) { 
+const Verse Bible::lookup(Ref ref, Ref &outputRef, LookupResult& status, bool firstVerse) { 
     // TODO: scan the file to retrieve the line with ref ...
 	
 	
@@ -48,6 +48,13 @@ const Verse Bible::lookup(Ref ref, LookupResult& status, bool firstVerse) {
 		if (ref.getBook() < 1 || ref.getBook() > 66)					//if the book number is not valid (1-66), don't bother searching
 		{
 			status = NO_BOOK;
+			searchDone = true;
+			cout << this->error(status);
+		}
+		
+		if (ref.getBook() == 66 && ref.getChap() == 22 && ref.getVerse() > 21)	//the last verse in the Bible is Revlation 22:21, if a higher verse than this is called for then return an error
+		{
+			status = NO_VERSE;
 			searchDone = true;
 			cout << this->error(status);
 		}
@@ -98,6 +105,7 @@ const Verse Bible::lookup(Ref ref, LookupResult& status, bool firstVerse) {
 		if( instream.eof() == false)
 		{
 			currentVerse = Verse(verseText);
+			outputRef = currentVerse.getRef();							//set outputRef equal to the reference of the verse being returned so that it can be displayed
 		}
 		else
 		{
@@ -105,7 +113,6 @@ const Verse Bible::lookup(Ref ref, LookupResult& status, bool firstVerse) {
 			cout << this->error(status);
 		}
 	}
-
 	return(currentVerse);
 }
 
@@ -148,19 +155,19 @@ const Ref prev(const Ref ref, LookupResult& status) {};
 const string Bible::error(LookupResult status) {
 	if (status == NO_BOOK)
 	{
-		return "Error: Book not found.\n";
+		return "<b>Error</b>: Book not found.\n";
 	}
 	else if (status == NO_CHAPTER)
 	{
-		return "Error: Chapter not found\n";
+		return "<b>Error</b>: Chapter not found\n";
 	}
 	else if (status == NO_VERSE)
 	{
-		return "Error: Verse not found\n";
+		return "<b>Error</b>: Verse not found\n";
 	}
 	else
 	{
-		return "Unknown error\n";
+		return "<b>Error</b>: Unknown error\n";
 	}
 };
 
